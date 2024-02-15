@@ -250,7 +250,7 @@ void updateBallPositions(float deltaTime) {
 
 void hitByCue() {
 	const int animationDuration = 5;  // Adjust as needed
-	const float frameTime = 0.000000016f;  // Assuming a frame time of 16 milliseconds
+	const float frameTime = 0.00016f;  // Assuming a frame time of 16 milliseconds
 
 	float elapsedTime;
 	//updateBallPositions(frameTime);
