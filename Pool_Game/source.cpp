@@ -231,38 +231,6 @@ void init(void) {
 	glEnable(GL_DEPTH_TEST);
 }
 
-void updateBallPositions(float deltaTime) {
-
-	// Move the cue ball based on its velocity
-	cueBallPosition.before_x = lerp(cueBallPosition.before_x, cueBallPosition.after_x, deltaTime);
-	cueBallPosition.before_z = lerp(cueBallPosition.before_z, cueBallPosition.after_z, deltaTime);
-
-	// Move the other balls based on their velocities
-	for (int i = 0; i < NUM_BALLS; ++i) {
-		if (balls[i].before_x != 0 && balls[i].before_z != 0) {
-			//balls[i].before_x = balls[i].after_x;
-			//balls[i].before_z = balls[i].after_z;
-			balls[i].before_x = lerp(balls[i].before_x, balls[i].after_x, deltaTime);
-			balls[i].before_z = lerp(balls[i].before_z, balls[i].after_z, deltaTime);
-		}
-	}
-}
-
-void hitByCue() {
-	const int animationDuration = 5;  // Adjust as needed
-	const float frameTime = 0.00016f;  // Assuming a frame time of 16 milliseconds
-
-	float elapsedTime;
-	//updateBallPositions(frameTime);
-	// Simulate animation for the specified duration
-	for (elapsedTime = 0.1f; elapsedTime < animationDuration; elapsedTime += frameTime) {
-		// Update ball positions with animation
-		updateBallPositions(frameTime);
-
-		//printf("%d %f \n", animationDuration, elapsedTime);
-	}
-}
-
 void drawCircle(float cx, float cy, float r, int num_segments)
 {
 	float theta = 3.1415926 * 2 / float(num_segments);
@@ -643,7 +611,43 @@ void bankShot(float table_length, float table_width, float table_height, float t
 		}
 	}
 }
+void updateBallPositions(float deltaTime) {
 
+	// Move the cue ball based on its velocity
+	cueBallPosition.before_x = lerp(cueBallPosition.before_x, cueBallPosition.after_x, deltaTime);
+	cueBallPosition.before_z = lerp(cueBallPosition.before_z, cueBallPosition.after_z, deltaTime);
+
+	drawCueBall(cueBallPosition.before_x, cueBallPosition.before_z, 0.1f, 4, 0.2);
+
+	//// Move the other balls based on their velocities
+	for (int i = 0; i < NUM_BALLS; ++i) {
+		if (balls[i].before_x != 0 && balls[i].before_z != 0) {
+			//balls[i].before_x = balls[i].after_x;
+			//balls[i].before_z = balls[i].after_z;
+			/*printf("Before : %f", balls[i].before_x);*/
+			balls[i].before_x = lerp(balls[i].before_x, balls[i].after_x, deltaTime);
+			//printf("After : %f", balls[i].before_x);
+			balls[i].before_z = lerp(balls[i].before_z, balls[i].after_z, deltaTime);
+
+			drawBall(balls[i].before_x, balls[i].before_z, 0.1f, 4, 0.2, balls[i].color);
+		}
+	}
+}
+
+void hitByCue() {
+	const int animationDuration = 3;  // Adjust as needed
+	const float frameTime = 0.1f;  // Assuming a frame time of 16 milliseconds
+
+	float elapsedTime;
+	//updateBallPositions(frameTime);
+	// Simulate animation for the specified duration
+	for (elapsedTime = 0.1f; elapsedTime < animationDuration; elapsedTime += frameTime) {
+		// Update ball positions with animation
+		updateBallPositions(frameTime);
+
+		//printf("%d %f \n", animationDuration, elapsedTime);
+	}
+}
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -679,9 +683,11 @@ void display(void) {
 
 	if (hit == true) {
 		hitByCue();
+		method = 0;
 	}
 	if (method == 1) {
 		drawBallsStart(table_length, table_width, table_height, table_thickness);
+		
 	}
 	if (method == 2) {
 		streightShot(table_length, table_width, table_height, table_thickness);
