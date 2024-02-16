@@ -333,6 +333,23 @@ void drawPicture() {
 	glPopMatrix();
 }
 
+void drawGround() {
+	//loadTextureDataFromWoodImage();
+	//glEnable(GL_TEXTURE_2D);
+	glPushMatrix();
+	glTranslatef(0, 2, 0);
+	glBegin(GL_POLYGON);
+	glColor3f(1, 0.5, 0);
+	glTexCoord2f(0.0f, 0.0f);  glVertex3f(-room_size*3, 0, -room_size*3);
+	glTexCoord2f(1.0f, 0.0f);  glVertex3f(room_size*3, 0, -room_size*3);
+	glTexCoord2f(1.0f, 1.0f);  glVertex3f(room_size*3, 0, room_size*3);
+	glTexCoord2f(0.0f, 1.0f);  glVertex3f(-room_size*3, 0, room_size*3);
+	glEnd();
+	glPopMatrix();
+	glDisable(GL_TEXTURE_2D);
+}
+
+
 void drawWallTexture() {
 	loadTextureDataFromWallImage();
 	glEnable(GL_TEXTURE_2D);
@@ -735,6 +752,9 @@ void display(void) {
 	float pocket_radius = 0.2;
 	float ball_radius = 0.2;
 
+
+	drawGround();
+
 	drawRoof();
 	//drawTableTopTexture();
 	//drawFloorTexture();
@@ -743,6 +763,8 @@ void display(void) {
 	glScalef(2, 0.8,1.5);
 	drawWallTexture();
 	glPopMatrix();
+
+
 	//drawCeylingTexture();
 	//drawRoom();
 
