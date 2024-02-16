@@ -6,7 +6,9 @@
 #include <time.h> 
 #include <cmath>
 
-int room_size = 20;
+int room_size = 15;
+int roof_size = room_size-8;
+int roof_height = 20;
 float wall_thickness = 0.1;
 int width;
 int height;
@@ -37,6 +39,10 @@ GLfloat objTX = 0.0; GLfloat objTY = 0.0; GLfloat objTZ = 0.0;
 
 //float vertices[][3] = {};
 
+//Roof surfaces
+static float roofV[][3] = { {-roof_size,roof_height,roof_size},{roof_size,roof_height,roof_size},{roof_size,roof_height,-roof_size},{-roof_size,roof_height,-roof_size},{0.0,roof_height+5,0.0} };
+
+
 typedef struct {
 	float before_x, before_z;
 	float after_x, after_z;
@@ -55,6 +61,7 @@ float lerp(float a, float b, float t) {
 
 // Function to calculate and set the starting positions of the balls on the table
 void setStartingPositions() {
+
 	int count = 0;
 	float offsetX = 0.0f, offsetZ = 0.0f, radius = 0.2f;
 	// Seed the random number generator with the current time
@@ -67,9 +74,9 @@ void setStartingPositions() {
 			balls[count].before_x = offsetX;
 			balls[count].before_z = -offsetZ;
 			// Randomize the after_x and after_z values
-			balls[count].after_x = static_cast<float>(rand() % 600 - 300) / 100.0f;  // Random value between -3 and +3
-			balls[count].after_z = static_cast<float>(rand() % 800 - 400) / 100.0f;  // Random value between -4 and +4
-
+			balls[count].after_x = static_cast<float>(rand() % 590) / 100.0f - 2.90f;  // Random value between -3 and +3
+			balls[count].after_z = static_cast<float>(rand() % 781) / 100.0f - 3.90f;  // Random value between -4 and +4
+			printf("%f , %f \n", balls[count].after_x, balls[count].after_z);
 			balls[count].color[0] = 1;
 			balls[count].color[1] = 0;
 			balls[count].color[2] = 0;
@@ -80,10 +87,32 @@ void setStartingPositions() {
 }
 
 void setStrightShot() {
+	cueBallPosition.before_x = -1.80;
+	cueBallPosition.before_z = -1.70;
+	cueBallPosition.after_x = -2.25;
+	cueBallPosition.after_z = -2.25;
 	balls[0].before_x = -2;
 	balls[0].before_z = -2;
 	balls[0].after_x = -3;
 	balls[0].after_z = -4;
+}
+
+void setCarromShot() {
+	cueBallPosition.before_x = 0;
+	cueBallPosition.before_z = 0;
+	cueBallPosition.after_x = 0.5;
+	cueBallPosition.after_z = -2;
+
+
+	balls[0].before_x = 0.6;
+	balls[0].before_z = -2;
+	balls[0].after_x = 3;
+	balls[0].after_z = -4;
+
+	balls[1].before_x = 0.4;
+	balls[1].before_z = -2;
+	balls[1].after_x = -3;
+	balls[1].after_z = -4;
 }
 
 void loadTextureDataFromWoodImage() {
@@ -263,6 +292,47 @@ void drawCircle(float cx, float cy, float r, int num_segments)
 	glEnd();
 }
 
+void triangle(int a, int b, int c)
+{
+	//glEnable(GL_TEXTURE_2D);
+
+	glBindTexture(GL_TEXTURE_2D, tex);
+
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0, 0);
+	glVertex3fv(roofV[a]);
+
+	glTexCoord2f(1.0, 0);
+	glVertex3fv(roofV[b]);
+
+	glTexCoord2f(0.5, 1.0);
+	glVertex3fv(roofV[c]);
+	glEnd();
+
+	//glDisable(GL_TEXTURE_2D);
+}
+
+void drawRoof()
+{
+	triangle(0, 1, 4);
+	triangle(1, 2, 4);
+	triangle(2, 4, 3);
+	triangle(0, 3, 4);
+}
+
+void drawPicture() {
+	glEnable(GL_TEXTURE_2D);
+	glPushMatrix();
+	glBegin(GL_POLYGON);
+	glColor3f(0, 0, 1);
+	//glTexCoord2f(0.0f, 0.0f);  glVertex3f();
+	//glTexCoord2f(1.0f, 0.0f);  glVertex3f();
+	//glTexCoord2f(1.0f, 1.0f);  glVertex3f();
+	//glTexCoord2f(0.0f, 1.0f);  glVertex3f();
+	glEnd();
+	glPopMatrix();
+}
+
 void drawWallTexture() {
 	loadTextureDataFromWallImage();
 	glEnable(GL_TEXTURE_2D);
@@ -360,6 +430,9 @@ void drawBall(float x, float z, float ball_radius, float tabble_height, float ta
 	glColor3f(color[0],color[1],color[2]);
 	glPushMatrix();
 	glTranslatef(x, tabble_height + table_thickness, z);
+	if ((x == -3 && z == -4) || (x == 3 && z == 4) || (x == 3 && z == -4) || (x == 3 && z == 4)) {
+
+	}
 	glutSolidSphere(ball_radius, 50, 50);
 	glPopMatrix();
 }
@@ -581,10 +654,6 @@ void drawBallsStart(float table_length, float table_width, float table_height, f
 void streightShot(float table_length, float table_width, float table_height, float table_thickness) {
 	if (beforeHit == true) {
 		setStrightShot();
-		cueBallPosition.before_x = -1.80;
-		cueBallPosition.before_z = -1.70;
-		cueBallPosition.after_x = -2.25;
-		cueBallPosition.after_z = -2.25;
 		beforeHit = false;
 	}
 	drawCueBall(cueBallPosition.before_x, cueBallPosition.before_z, 0.1f, table_height, table_thickness);
@@ -595,13 +664,9 @@ void streightShot(float table_length, float table_width, float table_height, flo
 	}
 }
 
-void bankShot(float table_length, float table_width, float table_height, float table_thickness) {
+void carromShot(float table_length, float table_width, float table_height, float table_thickness) {
 	if (beforeHit == true) {
-		setStrightShot();
-		cueBallPosition.before_x = -1.80;
-		cueBallPosition.before_z = -1.70;
-		cueBallPosition.after_x = -2.25;
-		cueBallPosition.after_z = -2.25;
+		setCarromShot();
 		beforeHit = false;
 	}
 	drawCueBall(cueBallPosition.before_x, cueBallPosition.before_z, 0.1f, table_height, table_thickness);
@@ -648,6 +713,7 @@ void hitByCue() {
 		//printf("%d %f \n", animationDuration, elapsedTime);
 	}
 }
+
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -669,9 +735,14 @@ void display(void) {
 	float pocket_radius = 0.2;
 	float ball_radius = 0.2;
 
+	drawRoof();
 	//drawTableTopTexture();
 	//drawFloorTexture();
-	//drawWallTexture();
+
+	glPushMatrix();
+	glScalef(2, 0.8,1.5);
+	drawWallTexture();
+	glPopMatrix();
 	//drawCeylingTexture();
 	//drawRoom();
 
@@ -693,7 +764,7 @@ void display(void) {
 		streightShot(table_length, table_width, table_height, table_thickness);
 	}
 	if (method == 3) {
-		drawBallsStart(table_length, table_width, table_height, table_thickness);
+		carromShot(table_length, table_width, table_height, table_thickness);
 	}
 
 	glPopMatrix();
@@ -701,6 +772,7 @@ void display(void) {
 	animationFactor++;
 	glutSwapBuffers();
 }
+
 void Timer(int x) {
 	rotation_factor += rotation_factor >= 360.0 ? -rotation_factor : 2;
 	glutPostRedisplay();
