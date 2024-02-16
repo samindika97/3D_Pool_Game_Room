@@ -51,6 +51,7 @@ typedef struct {
 
 Position balls[NUM_BALLS] ; // Array to store ball positions
 Position cueBallPosition;
+Position cueStickPosition;
 
 
 // Define a function for linear interpolation
@@ -76,7 +77,7 @@ void setStartingPositions() {
 			// Randomize the after_x and after_z values
 			balls[count].after_x = static_cast<float>(rand() % 590) / 100.0f - 2.90f;  // Random value between -3 and +3
 			balls[count].after_z = static_cast<float>(rand() % 781) / 100.0f - 3.90f;  // Random value between -4 and +4
-			printf("%f , %f \n", balls[count].after_x, balls[count].after_z);
+			//printf("%f , %f \n", balls[count].after_x, balls[count].after_z);
 			balls[count].color[0] = 1;
 			balls[count].color[1] = 0;
 			balls[count].color[2] = 0;
@@ -449,6 +450,19 @@ void drawTableTopTexture() {
 	glEnd();
 	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);
+}
+
+void drawCueStick(float x, float z) {
+	glColor3f(0.6, 0.2, 0);
+	glPushMatrix();
+	glTranslatef(x, 0, z);
+	glRotatef(-30, 1, 0, 1);
+	glPushMatrix();
+	glTranslatef(-1.3, 3, 8);     //x,y,z
+	glRotatef(180, 0, 1, 0);
+	glutSolidCone(0.1, 5, 20, 20);
+	glPopMatrix();
+	glPopMatrix();
 }
 
 void drawLamp() {
@@ -885,9 +899,16 @@ void drawBallsStart(float table_length, float table_width, float table_height, f
 		cueBallPosition.before_z = 2;
 		cueBallPosition.after_x = 0;
 		cueBallPosition.after_z = 0;
+
+
+		cueStickPosition.before_x = 0;
+		cueStickPosition.before_z = 0;
+		cueStickPosition.after_x = 0;
+		cueStickPosition.after_z = -1;
+
 		beforeHit = false;
 	}
-	
+	drawCueStick(cueStickPosition.before_x,cueStickPosition.before_z);
 	drawCueBall(cueBallPosition.before_x, cueBallPosition.before_z, 0.1f, table_height, table_thickness);
 	for (int i = 0; i < NUM_BALLS; ++i) {
 		drawBall(balls[i].before_x, balls[i].before_z, 0.1f, table_height, table_thickness,balls[i].color); // Adjust radius as needed
@@ -925,8 +946,11 @@ void updateBallPositions(float deltaTime) {
 	// Move the cue ball based on its velocity
 	cueBallPosition.before_x = lerp(cueBallPosition.before_x, cueBallPosition.after_x, deltaTime);
 	cueBallPosition.before_z = lerp(cueBallPosition.before_z, cueBallPosition.after_z, deltaTime);
+	cueStickPosition.before_x = lerp(cueStickPosition.before_x, cueStickPosition.after_x, deltaTime);
+	cueStickPosition.before_z = lerp(cueStickPosition.before_z, cueStickPosition.after_z, deltaTime);
 
 	drawCueBall(cueBallPosition.before_x, cueBallPosition.before_z, 0.1f, 4, 0.2);
+	drawCueStick(cueStickPosition.before_x, cueStickPosition.before_z);
 
 	//// Move the other balls based on their velocities
 	for (int i = 0; i < NUM_BALLS; ++i) {
@@ -970,7 +994,7 @@ void display(void) {
 	glRotatef(sceRY, 0.0, 1.0, 0.0);
 
 	//drawAxes();
-	drawGrid();
+	//drawGrid();
 
 	int table_length = 8;
 	int table_width = 6;
@@ -983,21 +1007,22 @@ void display(void) {
 
 	//drawGround();
 
-	drawRoof();
+	//drawRoof();
 	//drawTableTopTexture();
-	drawFloorTexture();
-	drawPicture();
+	//drawFloorTexture();
+	//drawPicture();
 
-	glPushMatrix();
-	glScalef(2, 0.8,1.5);
-	drawWallTexture();
-	glPopMatrix();
+
+	//glPushMatrix();
+	//glScalef(2, 0.8,1.5);
+	////drawWallTexture();
+	//glPopMatrix();
 
 
 	//drawCeylingTexture();
 	//drawRoom();
 
-	drawLamp();
+	//drawLamp();
 
 	drawTableTop(table_length, table_width, table_height, table_thickness);
 	drawPockets(table_length, table_width, table_height, table_thickness, pocket_radius);
