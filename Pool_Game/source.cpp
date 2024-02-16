@@ -115,43 +115,11 @@ void setCarromShot() {
 	balls[1].after_z = -4;
 }
 
-void loadTextureDataFromWoodImage() {
-	image = SOIL_load_image("wood_floor.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+void loadTextureDataFromImage(char* filename) {
+	image = SOIL_load_image(filename, &width, &height, 0, SOIL_LOAD_RGB);
 
 	if (image == NULL) {
-		//printf("Error : %s", SOIL_last_result());
-	}
-	glGenTextures(1, &tex);
-	glBindTexture(GL_TEXTURE_2D, tex);
-	glTexImage2D(GL_TEXTURE_2D, 0, 3, width, height, 0, GL_RGB,
-		GL_UNSIGNED_BYTE, image);  // Create texture from image data
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-}
-
-void loadTextureDataFromWallImage() {
-	image = SOIL_load_image("brick_wall.jpg", &width, &height, 0, SOIL_LOAD_RGB);
-
-	if (image == NULL) {
-		//printf("Error : %s", SOIL_last_result());
-	}
-	glGenTextures(1, &tex);
-	glBindTexture(GL_TEXTURE_2D, tex);
-	glTexImage2D(GL_TEXTURE_2D, 0, 3, width, height, 0, GL_RGB,
-		GL_UNSIGNED_BYTE, image);  // Create texture from image data
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-}
-
-void loadTextureDataFromCeilingImage() {
-	image = SOIL_load_image("ceiling_texture.jpg", &width, &height, 0, SOIL_LOAD_RGB);
-
-	if (image == NULL) {
-		//printf("Error : %s", SOIL_last_result());
+		printf("Error : %s", SOIL_last_result());
 	}
 	glGenTextures(1, &tex);
 	glBindTexture(GL_TEXTURE_2D, tex);
@@ -322,24 +290,33 @@ void drawRoof()
 
 void drawPicture() {
 	glEnable(GL_TEXTURE_2D);
+	char filepath[15] = "beach.jpeg";
+	loadTextureDataFromImage(filepath);
+	glColor3f(1, 1, 1);
 	glPushMatrix();
+	glTranslatef(0, 7, -6.5);
+	glScalef(0.7, 0.2, 0.5);
 	glBegin(GL_POLYGON);
-	glColor3f(0, 0, 1);
-	//glTexCoord2f(0.0f, 0.0f);  glVertex3f();
-	//glTexCoord2f(1.0f, 0.0f);  glVertex3f();
-	//glTexCoord2f(1.0f, 1.0f);  glVertex3f();
-	//glTexCoord2f(0.0f, 1.0f);  glVertex3f();
+	//glColor3f(0, 0, 1);
+	glTexCoord2f(0.0f, 0.0f);  glVertex3f(-room_size / 2, room_size, -room_size / 2);
+	glTexCoord2f(1.0f, 0.0f);  glVertex3f(room_size / 2, room_size, -room_size / 2);
+	glTexCoord2f(1.0f, 1.0f);  glVertex3f(room_size / 2, 0, -room_size / 2);
+	glTexCoord2f(0.0f, 1.0f);  glVertex3f(-room_size / 2, 0, -room_size / 2);
 	glEnd();
 	glPopMatrix();
+	glDisable(GL_TEXTURE_2D);
+
 }
 
 void drawGround() {
-	//loadTextureDataFromWoodImage();
-	//glEnable(GL_TEXTURE_2D);
+	char filepath[15] = "grass.jpeg";
+	loadTextureDataFromImage(filepath);
+	glColor3f(1, 1, 1);
+	//glColor3f(1, 0.5, 0);
+	glEnable(GL_TEXTURE_2D);
 	glPushMatrix();
 	glTranslatef(0, 2, 0);
 	glBegin(GL_POLYGON);
-	glColor3f(1, 0.5, 0);
 	glTexCoord2f(0.0f, 0.0f);  glVertex3f(-room_size*3, 0, -room_size*3);
 	glTexCoord2f(1.0f, 0.0f);  glVertex3f(room_size*3, 0, -room_size*3);
 	glTexCoord2f(1.0f, 1.0f);  glVertex3f(room_size*3, 0, room_size*3);
@@ -351,7 +328,8 @@ void drawGround() {
 
 
 void drawWallTexture() {
-	loadTextureDataFromWallImage();
+	char filepath[15] = "brick_wall.jpg";
+	loadTextureDataFromImage(filepath);
 	glEnable(GL_TEXTURE_2D);
 	glPushMatrix();
 
@@ -396,10 +374,11 @@ void drawWallTexture() {
 }
 
 void drawFloorTexture() {
-	loadTextureDataFromWoodImage();
+	char filepath[15] = "wood_floor.jpg";
+	loadTextureDataFromImage(filepath);
 	glEnable(GL_TEXTURE_2D);
 	glPushMatrix();
-	glTranslatef(0, 2, 0);
+	glTranslatef(0, 2.3, 0);
 	glBegin(GL_POLYGON);
 	glColor3f(1, 1, 1);
 	glTexCoord2f(0.0f, 0.0f);  glVertex3f(-room_size, 0, -room_size);
@@ -412,7 +391,8 @@ void drawFloorTexture() {
 }
 
 void drawCeylingTexture() {
-	loadTextureDataFromCeilingImage();
+	char filepath[20] = "ceiling_texture.jpg";
+	loadTextureDataFromImage(filepath);
 	glEnable(GL_TEXTURE_2D);
 	glPushMatrix();
 	glTranslatef(0, 2, 0);
@@ -757,7 +737,8 @@ void display(void) {
 
 	drawRoof();
 	//drawTableTopTexture();
-	//drawFloorTexture();
+	drawFloorTexture();
+	drawPicture();
 
 	glPushMatrix();
 	glScalef(2, 0.8,1.5);
