@@ -8,7 +8,7 @@
 
 int room_size = 15;
 int roof_size = room_size-8;
-int roof_height = 20;
+int roof_height = 12;
 float wall_thickness = 0.1;
 int width;
 int height;
@@ -40,7 +40,7 @@ GLfloat objTX = 0.0; GLfloat objTY = 0.0; GLfloat objTZ = 0.0;
 //float vertices[][3] = {};
 
 //Roof surfaces
-static float roofV[][3] = { {-roof_size,roof_height,roof_size},{roof_size,roof_height,roof_size},{roof_size,roof_height,-roof_size},{-roof_size,roof_height,-roof_size},{0.0,roof_height+5,0.0} };
+static float roofV[][3] = { {-roof_size*2,roof_height,roof_size*2},{roof_size*2,roof_height,roof_size*2},{roof_size*2,roof_height,-roof_size*2},{-roof_size*2,roof_height,-roof_size*2},{0.0,roof_height+5,0.0} };
 
 
 typedef struct {
@@ -282,10 +282,13 @@ void triangle(int a, int b, int c)
 
 void drawRoof()
 {
+	glPushMatrix();
+	glScalef(1.2, 1, 1);
 	triangle(0, 1, 4);
 	triangle(1, 2, 4);
 	triangle(2, 4, 3);
 	triangle(0, 3, 4);
+	glPopMatrix();
 }
 
 void drawPicture() {
@@ -329,7 +332,7 @@ void drawGround() {
 void drawWallTexture() {
 	char filepath[15] = "brick_wall.jpg";
 	loadTextureDataFromImage(filepath);
-	glEnable(GL_TEXTURE_2D);
+	//glEnable(GL_TEXTURE_2D);
 	glPushMatrix();
 
 	//back
