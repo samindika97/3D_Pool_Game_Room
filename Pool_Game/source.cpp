@@ -309,7 +309,7 @@ void drawPicture() {
 }
 
 void drawGround() {
-	char filepath[15] = "grass.jpeg";
+	char filepath[15] = "grass.jpg";
 	loadTextureDataFromImage(filepath);
 	glColor3f(1, 1, 1);
 	//glColor3f(1, 0.5, 0);
@@ -325,7 +325,6 @@ void drawGround() {
 	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);
 }
-
 
 void drawWallTexture() {
 	char filepath[15] = "brick_wall.jpg";
@@ -786,6 +785,30 @@ void drawPockets(int table_length, int table_width, int table_height, float tabl
 	glPopMatrix();
 }
 
+void drawTableLegs(int table_length, int table_width, int table_height) {
+	glPushMatrix();
+	glTranslatef(0, 2, 0);
+	glColor3f(0.2, 0, 0.4);
+	glBegin(GL_POLYGON);
+	glVertex3f(-3, 2.1, 4);
+	glVertex3f(3, 2.2, 4);
+	glVertex3f(2, 1, 4);
+	glVertex3f(-2, 1, 4);
+	glEnd();
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(0, 2, -8);
+	glColor3f(0.2, 0, 0.4);
+	glBegin(GL_POLYGON);
+	glVertex3f(-3, 2.1, 4);
+	glVertex3f(3, 2.2, 4);
+	glVertex3f(2, 1, 4);
+	glVertex3f(-2, 1, 4);
+	glEnd();
+	glPopMatrix();
+}
+
 void drawTableTop(int table_length, int table_width, int table_height, float table_thickness) {
 	glColor3f(0, 1, 0);
 	glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
@@ -976,6 +999,7 @@ void display(void) {
 	drawTableTop(table_length, table_width, table_height, table_thickness);
 	drawPockets(table_length, table_width, table_height, table_thickness, pocket_radius);
 	drawTableBorder(table_length, table_width, table_height, 0.2);
+	drawTableLegs(table_length,table_width,table_height);
 
 	if (hit == true) {
 		hitByCue();
