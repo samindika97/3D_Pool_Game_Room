@@ -229,7 +229,7 @@ void setCarromShot() {
 	balls[1].after_z = -4;
 }
 
-void loadTextureDataFromImage(char* filename) {
+void loadTextureDataFromImage(const char* filename) {
 	image = SOIL_load_image(filename, &width, &height, 0, SOIL_LOAD_RGB);
 
 	if (image == NULL) {
@@ -285,14 +285,17 @@ void setLighting() {
 	// Lighting set up
 	glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
 	glEnable(GL_LIGHTING);
-	//glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT1);
 
 	// Set lighting intensity and color
 	GLfloat qaAmbientLight[] = { 0.2, 0.2, 0.2, 1.0 };
 	GLfloat qaDiffuseLight[] = { 1,1,1, 1.0 };
 	GLfloat qaSpecularLight[] = { 1.0, 1.0, 1.0, 1.0 };
-	GLfloat qaLightPosition[] = { 2,3,0, 1.0 };
+
+	GLfloat qaLightPosition[] = { 2,4,9.5, 1.0 };  //lamp
 	GLfloat qaLightPosition1[] = { -1,0,0, 0.0 };
+
 	glLightfv(GL_LIGHT0, GL_AMBIENT, qaAmbientLight);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, qaDiffuseLight);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, qaSpecularLight);
@@ -310,8 +313,6 @@ void setLighting() {
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glMaterialfv(GL_FRONT, GL_SPECULAR, qaWhite);
 	glMaterialf(GL_FRONT, GL_SHININESS, 128.0);
-
-
 
 }
 
@@ -457,12 +458,51 @@ void drawBoard() {
 }
 
 void drawTree() {
+	GLUquadric* quad = gluNewQuadric();
+
 	glPushMatrix();
-	glTranslatef(-5, 5, 0);
-	glutSolidDodecahedron();
-	glTranslatef(0, -5, 0);
-	glutSolidCone(2, 5, 20, 20);
+	glColor3f(0.4, 0.2, 0);
+	glTranslatef(-25, 5, 15);
+	glRotatef(90, 1, 0, 0);
+	gluCylinder(quad, 1, 1, 5, 20, 20);
 	glPopMatrix();
+
+	glPushMatrix();
+	glColor3f(0, 1, 0);
+	glTranslatef(-25, 8, 15);
+	glRotatef(90, 1, 0, 0);
+	gluCylinder(quad, 0.5, 4, 5, 20, 20);
+	glPopMatrix();
+
+	glPushMatrix();
+	glColor3f(0, 1, 0);
+	glTranslatef(-25, 12, 15);
+	glRotatef(90, 1, 0, 0);
+	gluCylinder(quad, 0.5, 4, 5, 20, 20);
+	glPopMatrix();
+
+	glPushMatrix();
+	glColor3f(0, 1, 0);
+	glTranslatef(-25, 15, 15);
+	glRotatef(90, 1, 0, 0);
+	gluCylinder(quad, 0.2, 3, 5, 20, 20);
+	glPopMatrix();
+
+}
+
+void drawTreeBunch() {
+	drawTree();
+	glPushMatrix();
+	glTranslatef(-6, 0, 0);
+	drawTree();
+	glPopMatrix();
+	
+	glPushMatrix();
+//	glScalef(2, 2, 2);
+	glTranslatef(-7, 0, 4);
+	drawTree();
+	glPopMatrix();
+
 }
 
 void drawGround() {
@@ -479,52 +519,6 @@ void drawGround() {
 	glTexCoord2f(1.0f, 1.0f);  glVertex3f(room_size*3, 0, room_size*3);
 	glTexCoord2f(0.0f, 1.0f);  glVertex3f(-room_size*3, 0, room_size*3);
 	glEnd();
-	glPopMatrix();
-	glDisable(GL_TEXTURE_2D);
-}
-
-void drawWallTexture() {
-	char filepath[15] = "brick_wall.jpg";
-	loadTextureDataFromImage(filepath);
-	//glEnable(GL_TEXTURE_2D);
-	glPushMatrix();
-
-	//back
-	glBegin(GL_POLYGON);
-	glColor3f(1, 1, 1);
-	glTexCoord2f(0.0f, 0.0f);  glVertex3f(-room_size / 2, room_size, -room_size / 2);
-	glTexCoord2f(1.0f, 0.0f);  glVertex3f(room_size / 2, room_size, -room_size / 2);
-	glTexCoord2f(1.0f, 1.0f);  glVertex3f(room_size / 2, 0, -room_size / 2);
-	glTexCoord2f(0.0f, 1.0f);  glVertex3f(-room_size / 2, 0, -room_size / 2);
-	glEnd();
-
-	//front
-	glBegin(GL_POLYGON);
-	glColor3f(1, 1, 1);
-	glTexCoord2f(0.0f, 0.0f);  glVertex3f(-room_size / 2, room_size, room_size / 2);
-	glTexCoord2f(1.0f, 0.0f);  glVertex3f(room_size / 2, room_size, room_size / 2);
-	glTexCoord2f(1.0f, 1.0f);  glVertex3f(room_size / 2, 0, room_size / 2);
-	glTexCoord2f(0.0f, 1.0f);  glVertex3f(-room_size / 2, 0, room_size / 2);
-	glEnd();
-
-	//left
-	glBegin(GL_POLYGON);
-	glColor3f(1, 1, 1);
-	glTexCoord2f(0.0f, 0.0f);  glVertex3f(-room_size / 2, room_size, room_size / 2);
-	glTexCoord2f(1.0f, 0.0f);  glVertex3f(-room_size / 2, room_size, -room_size / 2);
-	glTexCoord2f(1.0f, 1.0f);  glVertex3f(-room_size / 2, 0, -room_size / 2);
-	glTexCoord2f(0.0f, 1.0f);  glVertex3f(-room_size / 2, 0, room_size / 2);
-	glEnd();
-
-	//right
-	glBegin(GL_POLYGON);
-	glColor3f(1, 1, 1);
-	glTexCoord2f(0.0f, 0.0f);  glVertex3f(room_size / 2, room_size, -room_size / 2);
-	glTexCoord2f(1.0f, 0.0f);  glVertex3f(room_size / 2, room_size, room_size / 2);
-	glTexCoord2f(1.0f, 1.0f);  glVertex3f(room_size / 2, 0, room_size / 2);
-	glTexCoord2f(0.0f, 1.0f);  glVertex3f(room_size / 2, 0, -room_size / 2);
-	glEnd();
-
 	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);
 }
@@ -616,6 +610,53 @@ void drawCueStick(float x, float z) {
 	glutSolidCone(0.1, 5, 20, 20);
 	glPopMatrix();
 	glPopMatrix();
+}
+
+//room inside
+
+void drawWallTexture() {
+	loadTextureDataFromImage("brick_wall.jpg");
+	glEnable(GL_TEXTURE_2D);
+	glPushMatrix();
+
+	//back
+	glBegin(GL_POLYGON);
+	glColor3f(1, 1, 1);
+	glTexCoord2f(0.0f, 0.0f);  glVertex3f(-room_size / 2, room_size, -room_size / 2);
+	glTexCoord2f(1.0f, 0.0f);  glVertex3f(room_size / 2, room_size, -room_size / 2);
+	glTexCoord2f(1.0f, 1.0f);  glVertex3f(room_size / 2, 0, -room_size / 2);
+	glTexCoord2f(0.0f, 1.0f);  glVertex3f(-room_size / 2, 0, -room_size / 2);
+	glEnd();
+
+	//front
+	glBegin(GL_POLYGON);
+	glColor3f(1, 1, 1);
+	glTexCoord2f(0.0f, 0.0f);  glVertex3f(-room_size / 2, room_size, room_size / 2);
+	glTexCoord2f(1.0f, 0.0f);  glVertex3f(room_size / 2, room_size, room_size / 2);
+	glTexCoord2f(1.0f, 1.0f);  glVertex3f(room_size / 2, 0, room_size / 2);
+	glTexCoord2f(0.0f, 1.0f);  glVertex3f(-room_size / 2, 0, room_size / 2);
+	glEnd();
+
+	//left
+	glBegin(GL_POLYGON);
+	glColor3f(1, 1, 1);
+	glTexCoord2f(0.0f, 0.0f);  glVertex3f(-room_size / 2, room_size, room_size / 2);
+	glTexCoord2f(1.0f, 0.0f);  glVertex3f(-room_size / 2, room_size, -room_size / 2);
+	glTexCoord2f(1.0f, 1.0f);  glVertex3f(-room_size / 2, 0, -room_size / 2);
+	glTexCoord2f(0.0f, 1.0f);  glVertex3f(-room_size / 2, 0, room_size / 2);
+	glEnd();
+
+	//right
+	glBegin(GL_POLYGON);
+	glColor3f(1, 1, 1);
+	glTexCoord2f(0.0f, 0.0f);  glVertex3f(room_size / 2, room_size, -room_size / 2);
+	glTexCoord2f(1.0f, 0.0f);  glVertex3f(room_size / 2, room_size, room_size / 2);
+	glTexCoord2f(1.0f, 1.0f);  glVertex3f(room_size / 2, 0, room_size / 2);
+	glTexCoord2f(0.0f, 1.0f);  glVertex3f(room_size / 2, 0, -room_size / 2);
+	glEnd();
+
+	glPopMatrix();
+	glDisable(GL_TEXTURE_2D);
 }
 
 void drawLamp() {
@@ -910,6 +951,15 @@ void drawRoom() {
 	glPopMatrix();
 }
 
+void drawDoor() {
+	glPushMatrix();
+	glColor3f(1, 0, 0);
+	glTranslated(0, 4.5, 11);
+	glScaled(3.5, 5, 0.2);
+	glutSolidCube(1.0);
+	glPopMatrix();
+}
+
 //Drawing Table 
 
 void drawPockets(int table_length, int table_width, int table_height, float table_thickness, float pocket_radius) {
@@ -1143,6 +1193,8 @@ void hitByCue() {
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	setLighting();
+
 	glPushMatrix();
 	// camera orientation (eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ)
 	gluLookAt(0.0 + camX, 9.0 + camY, 5.0 + camZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
@@ -1163,21 +1215,21 @@ void display(void) {
 	float ball_radius = 0.2;
 
 	drawChair();
-	//drawTree();
+	drawTreeBunch();
 
-	drawBoard();
+	/*drawBoard();
 
-	//drawGround();
+	drawGround();
 
-	//drawRoof();
+	drawRoof();*/
 	//drawTableTopTexture();
 	//drawFloorTexture();
 	//drawPicture();
-
+	drawDoor();
 
 	glPushMatrix();
 	glScalef(2, 0.8,1.5);
-	//drawWallTexture();
+	drawWallTexture();
 	glPopMatrix();
 
 
