@@ -212,6 +212,12 @@ void setStrightShot() {
 }
 
 void setCarromShot() {
+
+	cueStickPosition.before_x = 0;
+	cueStickPosition.before_z = -1.8;
+	cueStickPosition.after_x = 0;
+	cueStickPosition.after_z = -3.5;
+
 	cueBallPosition.before_x = 0;
 	cueBallPosition.before_z = 0;
 	cueBallPosition.after_x = 0.5;
@@ -378,7 +384,7 @@ void drawCircle(float cx, float cy, float r, int num_segments)
 void triangle(int a, int b, int c)
 {
 	//glEnable(GL_TEXTURE_2D);
-
+	glColor3f(1, 0, 0);
 	glBindTexture(GL_TEXTURE_2D, tex);
 
 	glBegin(GL_POLYGON);
@@ -392,19 +398,9 @@ void triangle(int a, int b, int c)
 	glVertex3fv(roofV[c]);
 	glEnd();
 
-	//glDisable(GL_TEXTURE_2D);
+	glDisable(GL_TEXTURE_2D);
 }
 
-void drawRoof()
-{
-	glPushMatrix();
-	glScalef(1.2, 1, 1);
-	triangle(0, 1, 4);
-	triangle(1, 2, 4);
-	triangle(2, 4, 3);
-	triangle(0, 3, 4);
-	glPopMatrix();
-}
 
 void drawPicture() {
 	glEnable(GL_TEXTURE_2D);
@@ -506,11 +502,11 @@ void drawTreeBunch() {
 }
 
 void drawGround() {
-	char filepath[15] = "grass.jpg";
-	loadTextureDataFromImage(filepath);
+	
+	loadTextureDataFromImage("grass.jpg");
 	glColor3f(1, 1, 1);
 	//glColor3f(1, 0.5, 0);
-	//glEnable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_2D);
 	glPushMatrix();
 	glTranslatef(0, 2, 0);
 	glBegin(GL_POLYGON);
@@ -613,6 +609,17 @@ void drawCueStick(float x, float z) {
 }
 
 //room inside
+
+void drawRoof()
+{
+	glPushMatrix();
+	glScalef(1.2, 1, 1);
+	triangle(0, 1, 4);
+	triangle(1, 2, 4);
+	triangle(2, 4, 3);
+	triangle(0, 3, 4);
+	glPopMatrix();
+}
 
 void drawWallTexture() {
 	loadTextureDataFromImage("brick_wall.jpg");
@@ -1141,6 +1148,7 @@ void carromShot(float table_length, float table_width, float table_height, float
 		setCarromShot();
 		beforeHit = false;
 	}
+	drawCueStick(cueStickPosition.before_x, cueStickPosition.before_z);
 	drawCueBall(cueBallPosition.before_x, cueBallPosition.before_z, 0.1f, table_height, table_thickness);
 	for (int i = 0; i < NUM_BALLS; ++i) {
 		if (balls[i].before_x != 0 && balls[i].before_z != 0) {
@@ -1217,11 +1225,11 @@ void display(void) {
 	drawChair();
 	drawTreeBunch();
 
-	/*drawBoard();
+	drawBoard();
 
-	drawGround();
+	//drawGround();
 
-	drawRoof();*/
+	//drawRoof();
 	//drawTableTopTexture();
 	//drawFloorTexture();
 	//drawPicture();
@@ -1229,7 +1237,7 @@ void display(void) {
 
 	glPushMatrix();
 	glScalef(2, 0.8,1.5);
-	drawWallTexture();
+	//drawWallTexture();
 	glPopMatrix();
 
 
