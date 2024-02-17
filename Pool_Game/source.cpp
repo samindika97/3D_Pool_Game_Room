@@ -228,11 +228,38 @@ void setCarromShot() {
 	balls[0].before_z = -2;
 	balls[0].after_x = 3;
 	balls[0].after_z = -4;
+	assignBallColor(3);
 
 	balls[1].before_x = 0.4;
 	balls[1].before_z = -2;
 	balls[1].after_x = -3;
 	balls[1].after_z = -4;
+	assignBallColor(1);
+
+	balls[2].before_x = 2.432;
+	balls[2].before_z = -1.320;
+	balls[2].after_x = 2.432;
+	balls[2].after_z = -1.320;
+	assignBallColor(2);
+
+	balls[3].before_x = 0.567;
+	balls[3].before_z = -0.320;
+	balls[3].after_x = 0.567;
+	balls[3].after_z = -0.320;
+	assignBallColor(3);
+
+	balls[4].before_x = 0.123;
+	balls[4].before_z = 1.653;
+	balls[4].after_x = 0.123;
+	balls[4].after_z = 1.653;
+	assignBallColor(4);
+
+	balls[5].before_x = -0.742;
+	balls[5].before_z = -1.653;
+	balls[5].after_x = -0.742;
+	balls[5].after_z = -1.653;
+	assignBallColor(5);
+
 }
 
 void loadTextureDataFromImage(const char* filename) {
