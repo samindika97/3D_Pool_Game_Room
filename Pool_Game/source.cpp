@@ -35,7 +35,7 @@ GLfloat objRX = 0.0; GLfloat objRY = 0.0; GLfloat objRZ = 0.0;
 GLfloat objTX = 0.0; GLfloat objTY = 0.0; GLfloat objTZ = 0.0;
 
 
-#define NUM_BALLS 10 // Number of balls 
+#define NUM_BALLS 15 // Number of balls 
 
 //float vertices[][3] = {};
 
@@ -59,6 +59,91 @@ float lerp(float a, float b, float t) {
 	return a + t * (b - a);
 }
 
+void assignBallColor(int index) {
+	switch (index) {
+	case 0:
+		balls[index].color[0] = 1.0f;  // Yellow
+		balls[index].color[1] = 1.0f;
+		balls[index].color[2] = 0.0f;
+		break;
+	case 1:
+		balls[index].color[0] = 0.0f;  // Blue
+		balls[index].color[1] = 0.0f;
+		balls[index].color[2] = 1.0f;
+		break;
+	case 2:
+		balls[index].color[0] = 0.5f;  // Red
+		balls[index].color[1] = 0.0f;
+		balls[index].color[2] = 0.0f;
+		break;
+	case 3:
+		balls[index].color[0] = 1.0f;  // Purple
+		balls[index].color[1] = 0.0f;
+		balls[index].color[2] = 1.0f;
+		break;
+	case 4:
+		balls[index].color[0] = 0.0f;  // Orange
+		balls[index].color[1] = 0.5f;
+		balls[index].color[2] = 1.0f;
+		break;
+	case 5:
+		balls[index].color[0] = 0.0f;  // Light Blue
+		balls[index].color[1] = 1.0f;
+		balls[index].color[2] = 1.0f;
+		break;
+	case 6:
+		balls[index].color[0] = 0.5f;  // Green
+		balls[index].color[1] = 1.0f;
+		balls[index].color[2] = 0.0f;
+		break;
+	case 7:
+		balls[index].color[0] = 1.0f;  // Brown
+		balls[index].color[1] = 0.5f;
+		balls[index].color[2] = 0.0f;
+		break;
+	case 8:
+		balls[index].color[0] = 1.0f;  // Pink
+		balls[index].color[1] = 0.5f;
+		balls[index].color[2] = 1.0f;
+		break;
+	case 9:
+		balls[index].color[0] = 0.0f;  // Dark Blue
+		balls[index].color[1] = 0.0f;
+		balls[index].color[2] = 0.5f;
+		break;
+	case 10:
+		balls[index].color[0] = 0.0f;  // Light Green
+		balls[index].color[1] = 1.0f;
+		balls[index].color[2] = 0.5f;
+		break;
+	case 11:
+		balls[index].color[0] = 0.5f;  // Dark Red
+		balls[index].color[1] = 0.0f;
+		balls[index].color[2] = 0.5f;
+		break;
+	case 12:
+		balls[index].color[0] = 0.0f;  // Light Brown
+		balls[index].color[1] = 0.5f;
+		balls[index].color[2] = 0.5f;
+		break;
+	case 13:
+		balls[index].color[0] = 0.5f;  // Dark Green
+		balls[index].color[1] = 0.5f;
+		balls[index].color[2] = 0.0f;
+		break;
+	case 14:
+		balls[index].color[0] = 0.5f;  // Light Purple
+		balls[index].color[1] = 0.0f;
+		balls[index].color[2] = 0.5f;
+		break;
+	default:
+		// Default color for unspecified cases
+		balls[index].color[0] = 1.0f;
+		balls[index].color[1] = 0.0f;
+		balls[index].color[2] = 0.0f;  // White
+		break;
+	}
+}
 
 // Function to calculate and set the starting positions of the balls on the table
 void setStartingPositions() {
@@ -78,10 +163,7 @@ void setStartingPositions() {
 			balls[count].after_x = static_cast<float>(rand() % 590) / 100.0f - 2.90f;  // Random value between -3 and +3
 			balls[count].after_z = static_cast<float>(rand() % 781) / 100.0f - 3.90f;  // Random value between -4 and +4
 			//printf("%f , %f \n", balls[count].after_x, balls[count].after_z);
-			balls[count].color[0] = 1;
-			balls[count].color[1] = 0;
-			balls[count].color[2] = 0;
-
+			assignBallColor(count);
 			count++;
 		}
 	}
@@ -312,12 +394,43 @@ void drawPicture() {
 
 }
 
+void drawText(const char* text, float x, float y, float z) {
+	
+	glPushMatrix();
+	glColor3f(1, 1, 0);  // Set text color (white in this case)
+	glRasterPos3f(x, y, z);
+
+	// Loop through each character in the string and display it
+	for (const char* c = text; *c != '\0'; ++c) {
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *c);
+	}
+
+	glPopMatrix();
+}
+
+void drawBoard() {
+	glPushMatrix();
+	glColor3f(0, 0, 1);
+	glTranslatef(20, 8, 15);
+	glScalef(0.5, 10, 0.5);
+	glutSolidCube(1);
+	glPopMatrix();
+	glPushMatrix();
+	glColor3f(0.4, 0.4, 0);
+	glTranslatef(20, 12, 15);
+	glScalef(5, 2, 0.5);
+	glutSolidCube(1);
+	glPopMatrix();
+	drawText("POOL", 18, 12, 15 + 0.8);
+	drawText("CLUB", 18, 11, 15 + 0.8);
+}
+
 void drawGround() {
 	char filepath[15] = "grass.jpg";
 	loadTextureDataFromImage(filepath);
 	glColor3f(1, 1, 1);
 	//glColor3f(1, 0.5, 0);
-	glEnable(GL_TEXTURE_2D);
+	//glEnable(GL_TEXTURE_2D);
 	glPushMatrix();
 	glTranslatef(0, 2, 0);
 	glBegin(GL_POLYGON);
@@ -438,18 +551,18 @@ void drawBall(float x, float z, float ball_radius, float tabble_height, float ta
 }
 
 void drawTableTopTexture() {
-	glEnable(GL_TEXTURE_2D);
+	//glEnable(GL_TEXTURE_2D);
 	glPushMatrix();
 	glTranslatef(0, 4.1, 0);
 	glBegin(GL_POLYGON);
 	glColor3f(1, 1, 1);
-	glTexCoord2f(0.0f, 0.0f);  glVertex3f(-3.0, 0, -4.0);
-	glTexCoord2f(0.0f, 1.0f);  glVertex3f(3.0, 0, -4.0);
-	glTexCoord2f(1.0f, 1.0f);  glVertex3f(3.0, 0, 4.0);
-	glTexCoord2f(0.0f, 1.0f);  glVertex3f(-3.0, 0, 4.0);
+	glVertex3f(-3.0, 0, -4.0);
+	glVertex3f(3.0, 0, -4.0);
+	glVertex3f(3.0, 0, 4.0);
+	glVertex3f(-3.0, 0, 4.0);
 	glEnd();
 	glPopMatrix();
-	glDisable(GL_TEXTURE_2D);
+	//glDisable(GL_TEXTURE_2D);
 }
 
 void drawCueStick(float x, float z) {
@@ -828,16 +941,16 @@ void drawTableLegs(int table_length, int table_width, int table_height) {
 
 void drawTableTop(int table_length, int table_width, int table_height, float table_thickness) {
 	glColor3f(0, 1, 0);
-	glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
-	glEnable(GL_TEXTURE_GEN_T);
-	glBindTexture(GL_TEXTURE_2D, tex);
+	//glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+	//glEnable(GL_TEXTURE_GEN_T);
+	//glBindTexture(GL_TEXTURE_2D, tex);
 	glPushMatrix();
 	glTranslatef(0, table_height, 0);
 	glScalef(table_width, table_thickness, table_length);
 	glutSolidCube(1);
 	glPopMatrix();
-	glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
-	glDisable(GL_TEXTURE_GEN_T);
+	//glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+	//glDisable(GL_TEXTURE_GEN_T);
 
 
 }
@@ -989,6 +1102,8 @@ void display(void) {
 	// camera orientation (eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ)
 	gluLookAt(0.0 + camX, 9.0 + camY, 5.0 + camZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
+	
+
 	// move the scene (all the rendered environment) using keyboard keys
 	glTranslatef(sceTX, sceTY, sceTZ);
 	glRotatef(sceRY, 0.0, 1.0, 0.0);
@@ -1005,24 +1120,26 @@ void display(void) {
 
 	drawChair();
 
+	drawBoard();
+
 	//drawGround();
 
-	//drawRoof();
+	drawRoof();
 	//drawTableTopTexture();
-	//drawFloorTexture();
-	//drawPicture();
+	/*drawFloorTexture();
+	drawPicture();
 
 
-	//glPushMatrix();
-	//glScalef(2, 0.8,1.5);
-	////drawWallTexture();
-	//glPopMatrix();
+	glPushMatrix();
+	glScalef(2, 0.8,1.5);
+	drawWallTexture();
+	glPopMatrix();*/
 
 
-	//drawCeylingTexture();
-	//drawRoom();
+	/*drawCeylingTexture();
+	drawRoom();*/
 
-	//drawLamp();
+	drawLamp();
 
 	drawTableTop(table_length, table_width, table_height, table_thickness);
 	drawPockets(table_length, table_width, table_height, table_thickness, pocket_radius);
