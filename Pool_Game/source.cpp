@@ -174,10 +174,41 @@ void setStrightShot() {
 	cueBallPosition.before_z = -1.70;
 	cueBallPosition.after_x = -2.25;
 	cueBallPosition.after_z = -2.25;
+
+	cueStickPosition.before_x = -1.5;
+	cueStickPosition.before_z = -3.5;
+	cueStickPosition.after_x = -2;
+	cueStickPosition.after_z = -3.5;
+
 	balls[0].before_x = -2;
 	balls[0].before_z = -2;
 	balls[0].after_x = -3;
 	balls[0].after_z = -4;
+	assignBallColor(0);
+
+	balls[2].before_x = 2.432;
+	balls[2].before_z = -1.320;
+	balls[2].after_x = 2.432;
+	balls[2].after_z = -1.320;
+	assignBallColor(2);
+
+	balls[3].before_x = 1.432;
+	balls[3].before_z = -0.320;
+	balls[3].after_x = 1.432;
+	balls[3].after_z = -0.320;
+	assignBallColor(3);
+
+	balls[4].before_x = 0.742;
+	balls[4].before_z = 1.653;
+	balls[4].after_x = 0.742;
+	balls[4].after_z = 1.653;
+	assignBallColor(4);
+
+	balls[5].before_x = -0.742;
+	balls[5].before_z = -1.653;
+	balls[5].after_x = -0.742;
+	balls[5].after_z = -1.653;
+	assignBallColor(5);
 }
 
 void setCarromShot() {
@@ -423,6 +454,15 @@ void drawBoard() {
 	glPopMatrix();
 	drawText("POOL", 18, 12, 15 + 0.8);
 	drawText("CLUB", 18, 11, 15 + 0.8);
+}
+
+void drawTree() {
+	glPushMatrix();
+	glTranslatef(-5, 5, 0);
+	glutSolidDodecahedron();
+	glTranslatef(0, -5, 0);
+	glutSolidCone(2, 5, 20, 20);
+	glPopMatrix();
 }
 
 void drawGround() {
@@ -870,6 +910,8 @@ void drawRoom() {
 	glPopMatrix();
 }
 
+//Drawing Table 
+
 void drawPockets(int table_length, int table_width, int table_height, float table_thickness, float pocket_radius) {
 	glColor3f(1, 1, 1);
 	//MR
@@ -1005,6 +1047,8 @@ void drawTableBorder(int table_length, int table_width, int table_height, float 
 	glPopMatrix();
 }
 
+//Different shots
+
 void drawBallsStart(float table_length, float table_width, float table_height, float table_thickness) {
 	if (beforeHit == true) {
 		setStartingPositions();
@@ -1033,6 +1077,7 @@ void streightShot(float table_length, float table_width, float table_height, flo
 		setStrightShot();
 		beforeHit = false;
 	}
+	drawCueStick(cueStickPosition.before_x, cueStickPosition.before_z);
 	drawCueBall(cueBallPosition.before_x, cueBallPosition.before_z, 0.1f, table_height, table_thickness);
 	for (int i = 0; i < NUM_BALLS; ++i) {
 		if (balls[i].before_x != 0 && balls[i].before_z != 0) {
@@ -1081,8 +1126,8 @@ void updateBallPositions(float deltaTime) {
 }
 
 void hitByCue() {
-	const int animationDuration = 3;  // Adjust as needed
-	const float frameTime = 0.1f;  // Assuming a frame time of 16 milliseconds
+	const int animationDuration = 3;  
+	const float frameTime = 0.1f; 
 
 	float elapsedTime;
 	//updateBallPositions(frameTime);
@@ -1102,7 +1147,6 @@ void display(void) {
 	// camera orientation (eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ)
 	gluLookAt(0.0 + camX, 9.0 + camY, 5.0 + camZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
-	
 
 	// move the scene (all the rendered environment) using keyboard keys
 	glTranslatef(sceTX, sceTY, sceTZ);
@@ -1119,21 +1163,22 @@ void display(void) {
 	float ball_radius = 0.2;
 
 	drawChair();
+	//drawTree();
 
 	drawBoard();
 
 	//drawGround();
 
-	drawRoof();
+	//drawRoof();
 	//drawTableTopTexture();
-	/*drawFloorTexture();
-	drawPicture();
+	//drawFloorTexture();
+	//drawPicture();
 
 
 	glPushMatrix();
 	glScalef(2, 0.8,1.5);
-	drawWallTexture();
-	glPopMatrix();*/
+	//drawWallTexture();
+	glPopMatrix();
 
 
 	/*drawCeylingTexture();
